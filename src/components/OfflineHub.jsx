@@ -17,23 +17,56 @@ export default function OfflineHub() {
   const syncContent = async () => {
     setIsLoading(true);
     try {
-      // Fetch mock posts to simulate a news batch
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-      const data = await response.json();
+      // Simulate network request for realistic articles
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Add fake images/metadata for realism
-      const enrichedData = data.slice(0, 15).map(article => ({
-        ...article,
-        readTime: Math.floor(Math.random() * 5) + 2, // 2-6 min read
-        date: new Date().toLocaleDateString()
-      }));
+      const realisticArticles = [
+        {
+          id: 1,
+          title: "The Future of AI in Personal Finance",
+          body: "Artificial intelligence is rapidly transforming how we manage our money. From predictive budgeting apps to automated investment strategies, the tools available to retail investors are becoming increasingly sophisticated. In this deep dive, we explore how machine learning models are analyzing spending patterns to offer real-time financial advice.",
+          content: [
+            "Financial institutions are now deploying LLMs to process loan applications and customer queries at unprecedented speeds. But the real game changer is happening on the consumer side.",
+            "Imagine an app that not only tracks your expenses but actively negotiates lower rates on your utility bills. This is no longer science fiction. AI agents can act on your behalf to cancel unused subscriptions and optimize your savings rates across different accounts.",
+            "As we move into an era of hyper-personalized finance, the 'Offline Wallet Assistant' is well positioned. By keeping core functionalities alive even without internet access, users are empowered to make critical financial decisions anywhere, anytime."
+          ],
+          category: "Technology",
+          readTime: 4,
+          date: new Date().toLocaleDateString()
+        },
+        {
+          id: 2,
+          title: "Sustainable Living: 5 Changes You Can Make Today",
+          body: "Transitioning to a sustainable lifestyle doesn't require living off the grid. Small, consistent changes in our daily routines can have a compounding positive effect on the environment.",
+          content: [
+            "We often hear about the critical impact of large corporations on carbon footprints, but individual consumer choices dictate market trends. The first step is addressing food waste. By simply planning meals and storing perishables correctly, the average household can cut its waste by 30%.",
+            "Secondly, energy consumption at home. Swapping to LED bulbs and utilizing smart thermostats are one-time upgrades that offer long-term efficiency. Furthermore, consider the life cycle of your wardrobe. Fast fashion is a significant polluter; choosing durable, timeless pieces reduces textile waste.",
+            "Lastly, conscious commuting. If public transport isn't a viable option, carpooling or consolidating errands can significantly reduce your weekly emissions. Sustainability is about progress, not perfection."
+          ],
+          category: "Lifestyle",
+          readTime: 3,
+          date: new Date().toLocaleDateString()
+        },
+        {
+          id: 3,
+          title: "Understanding Blockchain Beyond Cryptocurrency",
+          body: "While Bitcoin and Ethereum grab the headlines, the underlying blockchain technology is quietly revolutionizing supply chains, healthcare records, and digital identity verification.",
+          content: [
+            "At its core, a blockchain is a distributed ledger that records transactions across many computers, ensuring that the registered data cannot be altered retroactively without the alteration of all subsequent blocks.",
+            "In supply chain management, this means unparalleled transparency. A supermarket can trace the origin of a mango back to the specific farm and harvest date. This reduces fraud and ensures ethical sourcing.",
+            "Healthcare is another frontier. Patient records are often fragmented across different providers. A secure blockchain system could allow patients to grant doctors temporary access to their complete medical history, improving diagnosis and treatment while maintaining strict privacy."
+          ],
+          category: "Tech & World",
+          readTime: 5,
+          date: new Date().toLocaleDateString()
+        }
+      ];
 
-      setArticles(enrichedData);
-      localStorage.setItem('offline-articles', JSON.stringify(enrichedData));
-      
-      setTimeout(() => setIsLoading(false), 800); // UI delay for effect
+      setArticles(realisticArticles);
+      localStorage.setItem('offline-articles', JSON.stringify(realisticArticles));
+      setIsLoading(false);
     } catch (error) {
-      alert("Failed to sync. Please ensure you are connected to the internet first!");
+      alert("Failed to sync. Please try again.");
       setIsLoading(false);
     }
   };
@@ -65,9 +98,16 @@ export default function OfflineHub() {
           </div>
 
           <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <p>{selectedArticle.body}</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p style={{ fontWeight: 'bold' }}>{selectedArticle.body}</p>
+            {selectedArticle.content && selectedArticle.content.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+            {!selectedArticle.content && (
+              <>
+                <p>Enjoy reading this realistic article on your commute, completely offline!</p>
+                <p>More detailed content and insights will be synced when you next connect to Wi-Fi. This placeholder ensures you still have engaging reading material.</p>
+              </>
+            )}
           </div>
         </article>
       </div>
@@ -118,7 +158,7 @@ export default function OfflineHub() {
                   {article.title}
                 </h4>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                  <span>Tech & World</span>
+                  <span>{article.category || 'News'}</span>
                   <span>{article.readTime} min read</span>
                 </div>
               </div>
